@@ -25,9 +25,11 @@ main:
 
 ##      Some initial test code.  Substitute your own as needed.
 ##	
-	la $a0, tiny
+##	la $a0, tiny
+##	jal print_int	
+	la $a1, emboss
+	lb $a0, 1($a1)
 	jal print_int
-##	la $a1, emboss
 ##	la $a2, tiny_out
 ##	jal conv
 ##	la $a0, tiny_out
