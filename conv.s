@@ -4,12 +4,20 @@ conv:
 	## Your code here.
 
 	# a0 has original image
-	# first 4bytes are size of N, save that as variable
-	
-	
-	# Traverse the entire image with a 3x3 square (kernel) = a1
+	lw $s0 0($a0) # load N into t0
 
-	# save changed pixel values to a2 row by row	
+	addi $s1 $s0 -2 # N-2 for output
+		
+        #load first oringal R value, turn into a loop
+	lb $t0 4($a0) #input
+	lb $t1 0($a1) #kernel
+	mult $t0 $t1
+	mflo $t3
+	jal print_int
+	# Traverse the entire image with a 3x3 square (kernel) = a1
+	# 4($a1) = center of kernel
+	# save changed pixel values to a2 row by row
+		
 	#
 	jr $ra
 
@@ -24,19 +32,23 @@ main:
 	sw $ra, 0($sp)
 
 ##      Some initial test code.  Substitute your own as needed.
-##	
-##	la $a0, tiny
-##	jal print_int	
+	
+	la $a0, tiny
+
 	la $a1, emboss
-	lb $a0, 1($a1)
-	jal print_int
-##	la $a2, tiny_out
-##	jal conv
-##	la $a0, tiny_out
-##	jal print_ppm
+
+	la $a2, tiny_out
+
+	jal conv
+
+	la $a0, tiny_out
+
+	jal print_ppm
 
 	lw $ra, 0($sp)
+
 	addi $sp, $sp, 4
+
 	jr $ra
 	
 print_int:
