@@ -5,6 +5,7 @@ conv:
 	# a0 has original image
 	lw $s0 0($a0) 	# load N into t0
 	addi $s0 $s0 -2 # N-2 for output
+	sw $a2 $s0	# set the fist 4 bytes of output to N-2
 	multu $s0 $s0   # unsigned, always positive	
 	mflo $s0	# total pixels to convolute
 		
@@ -13,12 +14,14 @@ conv:
 
 
 outer:
-	bgtz $s7 innerRED 	# decrement s7 at end of inner
+	bgtz $s7 inner 	# decrement s7 at end of inner
 	
 	b done
 	
 
-innerRED:
+inner:
+	#t3 = RED SUM, t5 = GREEN SUM, t7 = BLUE SUM
+
 	li $t0 4	# offset for 0th pixel's R value
 	add $t0, $t0, $a0
 
@@ -26,65 +29,192 @@ innerRED:
 	lb $t0 ($t0)	# input R val pix 0
 	lb $t1 0($a1) 	# kernel 0
 	mult $t0 $t1
-	mflo $t3      	# result 0
-	addi $t0 3	# increment 3: next Pixel's R value within 3x3
+	mflo $t3      	# result 0 RED
+	addi $t0 1	# increment: G value, same pixel
 
+	lb $t0 ($t0) 	# input G val pix 0
+	mult $t0 $t1 	
+	mflo $t5	# result 0 GREEN
+	addi $t0 1	# increment: B value, same pixel
+
+	lb $t0 ($t0)	# input B val pix 0
+	mult $t0 $t1
+	mflo $t7
+	addi $t0 1	#increment: next pixel R value
+
+####
+	
 	lb $t0 ($t0) 	# input R val pix 1 
 	lb $t1 1($a1) 	# kernel 1
 	mult $t0 $t1
 	mflo $t4      	# result 1
-	add $t3 $t3 $t4 # sum
-	addi $t0 3	# increment
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
 
-	lb $t0 ($t0) 	
-	lb $t1 2($a1) 	
+	lb $t0 ($t0)	# input G val pix 1
 	mult $t0 $t1
-	mflo $t4	
-	add $t3 $t3 $t4  
-	addi $t0 3	
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
 
-	lb $t0 ($t0)  	 
-	lb $t1 3($a1)
+	lb $t0 ($t0) 	# input B val pix 1
 	mult $t0 $t1
-	mflo $t4
-	add $t3 $t3 $t4
-	addi $t0 3
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
 
-	lb $t0 ($t0)  	 
-	lb $t1 4($a1)
-	mult $t0 $t1
-	mflo $t4
-	add $t3 $t3 $t4
-	addi $t0 3
+####
 
-	lb $t0 ($t0)  	 
-	lb $t1 5($a1)
+	lb $t0 ($t0) 	# input R val pix 2 
+	lb $t1 2($a1) 	# kernel 2
 	mult $t0 $t1
-	mflo $t4
-	add $t3 $t3 $t4
-	addi $t0 3
+	mflo $t4      	# result 2
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
 
-	lb $t0 ($t0)  	 
-	lb $t1 6($a1)
+	lb $t0 ($t0)	# input G val pix 2
 	mult $t0 $t1
-	mflo $t4
-	add $t3 $t3 $t4
-	addi $t0 3	
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
 
-	lb $t0 ($t0)  	 
-	lb $t1 7($a1)
+	lb $t0 ($t0) 	# input B val pix 2
 	mult $t0 $t1
-	mflo $t4
-	add $t3 $t3 $t4
-	addi $t0 3
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
 
-	lb $t0 ($t0)  	 
-	lb $t1 8($a1)
+####
+
+	lb $t0 ($t0) 	# input R val pix 3 
+	lb $t1 3($a1) 	# kernel 3
 	mult $t0 $t1
-	mflo $t4
-	add $t3 $t3 $t4
+	mflo $t4      	# result 3
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
+
+	lb $t0 ($t0)	# input G val pix 3
+	mult $t0 $t1
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
+
+	lb $t0 ($t0) 	# input B val pix 3
+	mult $t0 $t1
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
+
+####
+
+	lb $t0 ($t0) 	# input R val pix 4 
+	lb $t1 4($a1) 	# kernel 4
+	mult $t0 $t1
+	mflo $t4      	# result 4
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
+
+	lb $t0 ($t0)	# input G val pix 4
+	mult $t0 $t1
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
+
+	lb $t0 ($t0) 	# input B val pix 4
+	mult $t0 $t1
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
+
+####
+
+	lb $t0 ($t0) 	# input R val pix 5 
+	lb $t1 5($a1) 	# kernel 5
+	mult $t0 $t1
+	mflo $t4      	# result 5
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
+
+	lb $t0 ($t0)	# input G val pix 5
+	mult $t0 $t1
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
+
+	lb $t0 ($t0) 	# input B val pix 5
+	mult $t0 $t1
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
+
+####
+
+	lb $t0 ($t0) 	# input R val pix 6 
+	lb $t1 6($a1) 	# kernel 6
+	mult $t0 $t1
+	mflo $t4      	# result 6
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
+
+	lb $t0 ($t0)	# input G val pix 6
+	mult $t0 $t1
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
+
+	lb $t0 ($t0) 	# input B val pix 6
+	mult $t0 $t1
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
+
+####
+
+	lb $t0 ($t0) 	# input R val pix 7
+	lb $t1 7($a1) 	# kernel 7
+	mult $t0 $t1
+	mflo $t4      	# result 7
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
+
+	lb $t0 ($t0)	# input G val pix 7
+	mult $t0 $t1
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
+
+	lb $t0 ($t0) 	# input B val pix 7
+	mult $t0 $t1
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
+
+####
+
+	lb $t0 ($t0) 	# input R val pix 8 
+	lb $t1 8($a1) 	# kernel 8
+	mult $t0 $t1
+	mflo $t4      	# result 8
+	add $t3 $t3 $t4 # sum RED
+	addi $t0 1	# increment
+
+	lb $t0 ($t0)	# input G val pix 8
+	mult $t0 $t1
+	mflo $t6
+	add $t5 $t5 $t6 # sum GREEN
+	addi $t0 1	
+
+	lb $t0 ($t0) 	# input B val pix 8
+	mult $t0 $t1
+	mflo $t8
+	add $t7 $t7 $t8	 # sum blue
+	addi $t0 1      #increment: next pixel
+
+
 	
 	sb $s1 ($t3)   	# new value of R for target pixel
+	sb $s2 ($t5) 	# new value of G for target pixel
+	sb $s3 ($t7)	# new value of B for target pixel
 	addi $s0 -1 	# decrement number of pixels left to conv
 	j outter
 
