@@ -5,18 +5,38 @@ conv:
 
 	# a0 has original image
 	lw $s0 0($a0) # load N into t0
-
 	addi $s1 $s0 -2 # N-2 for output
+	mult $s1 $s1	
+	mflo $s7	# total pixels to convolute
 		
-        #load first oringal R value, turn into a loop
-	lb $t0 4($a0) #input
-	lb $t1 0($a1) #kernel
+        # load first oringal RGB values and multiply, turn into a loop
+	lb $t0 4($a0) 	# input R val pix 0
+	lb $t1 0($a1) 	# kernel 0
 	mult $t0 $t1
-	mflo $t3
-	jal print_int
-	# Traverse the entire image with a 3x3 square (kernel) = a1
+	mflo $t3      	# result 0
+
+	lb $t0 7($a0) 	# input R val pix 1 
+	lb $t1 1($a1) 	# kernel 1
+	mult $t0 $t1
+	mflo $t4      	# result 1
+	add $t3 $t3 $t4 # sum
+
+	lb $t0 10($a0) 	# input R val pix 2
+	lb $t1 2($a1) 	# kernel 2
+	mult $t0 $t1
+	mflo $t4	# result 2
+	add $t3 $t3 $t4 # sum
+
+
+
+	# jal print_int
+	# sum all of these, save to R G or B, repeat	
+
+
+	
+	# Traverse the entire NxN image pixel by pixel (kernel) = a1
 	# 4($a1) = center of kernel
-	# save changed pixel values to a2 row by row
+	# save changed pixel values to a2 (corresponding to 4($a1)
 		
 	#
 	jr $ra
