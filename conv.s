@@ -60,8 +60,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 1
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 ####
 
@@ -81,8 +81,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 2
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 ####
 
@@ -102,8 +102,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 3
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 ####
 
@@ -123,8 +123,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 4
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 ####
 
@@ -144,8 +144,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 5
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 ####
 
@@ -165,8 +165,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 6
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 ####
 
@@ -186,8 +186,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 7
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 ####
 
@@ -207,8 +207,8 @@ inner:
 	lb $t0 ($t0) 	# input B val pix 8
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	 # sum blue
-	addi $t0 1      #increment: next pixel
+	add $t7 $t7 $t8	# sum blue
+	addi $t0 1      # increment: next pixel
 
 
 	
