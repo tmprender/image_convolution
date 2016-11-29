@@ -4,28 +4,54 @@ conv:
 	## Your code here.
 
 	# a0 has original image
-	lw $s0 0($a0) # load N into t0
+	lw $s0 0($a0) 	# load N into t0
 	addi $s1 $s0 -2 # N-2 for output
-	mult $s1 $s1	
-	mflo $s7	# total pixels to convolute
+	multu $s1 $s1   # unsigned, always positive	
+	mflo $s1	# total pixels to convolute
 		
+	bgtz $s1 outer  # there's at least 1 pixel to convolute
+	b done		# there are no pixels to convolute
+
+
+outer:
+	bgtz $s7 innerRED 	# decrement s7 at end of inner
+	b done
+	
+
+innerRED:
         # load first oringal RGB values and multiply, turn into a loop
-	lb $t0 4($a0) 	# input R val pix 0
+	li $t0 4
+	add $t0, $t0, $a0
+
+
+	lb $t0 ($t0)	# input R val pix 0
 	lb $t1 0($a1) 	# kernel 0
 	mult $t0 $t1
 	mflo $t3      	# result 0
+	addi $t0 3	# increment 3: next Pixel's R value within 3x3
 
-	lb $t0 7($a0) 	# input R val pix 1 
+	lb $t0 ($t0) 	# input R val pix 1 
 	lb $t1 1($a1) 	# kernel 1
 	mult $t0 $t1
 	mflo $t4      	# result 1
 	add $t3 $t3 $t4 # sum
+	addi $t0 3	# increment
 
-	lb $t0 10($a0) 	# input R val pix 2
+	lb $t0 ($t0) 	# input R val pix 2
 	lb $t1 2($a1) 	# kernel 2
 	mult $t0 $t1
 	mflo $t4	# result 2
 	add $t3 $t3 $t4 # sum
+	addi $t0 3	# inc
+
+	lb $t0 ($t0)  	 
+	lb $t1 3($a1)
+	mult $t0 $t1
+	mflo $t4
+	add $t3 $t3 $t4
+	addi $t0 3
+
+	
 
 
 
@@ -38,7 +64,7 @@ conv:
 	# 4($a1) = center of kernel
 	# save changed pixel values to a2 (corresponding to 4($a1)
 		
-	#
+done:
 	jr $ra
 
 #################################################################################
