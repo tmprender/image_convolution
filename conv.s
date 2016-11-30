@@ -2,19 +2,22 @@
 
 conv:
 
-	# a0 has original image
-	lw $s0 0($a0) 	# load N into t0
+
+	lw $s0 0($a0) 	# N
 	addi $s0 $s0 -2 # N-2 for output
 	sw $a2 $s0	# set the fist 4 bytes of output to N-2
-	multu $s0 $s0   # unsigned, always positive	
+	multu $s0 $s0   	
 	mflo $s0	# total pixels to convolute
-		
+	
+	li $s7 4	#initial offset
+	add $s7 $s7 $a0	
+
 	bgtz $s0 outer  # there's at least 1 pixel to convolute
 	b done		# there are no pixels to convolute
 
 
 outer:
-	bgtz $s7 inner 	# decrement s7 at end of inner
+	bgtz $s0 inner 	# decrement s7 at end of inner
 	
 	b done
 	
@@ -22,34 +25,34 @@ outer:
 inner:
 	#t3 = RED SUM, t5 = GREEN SUM, t7 = BLUE SUM
 
-	li $t0 4	# offset for 0th pixel's R value
-	add $t0, $t0, $a0
+#	li $t0 4	# offset
+#	add $t0, $t0, $a0
 
 
 	lb $t0 ($t0)	# input R val pix 0
 	lb $t1 0($a1) 	# kernel 0
 	mult $t0 $t1
-	mflo $t3      	# result 0 RED
+	mflo $t3      	
 	addi $t0 1	# increment: G value, same pixel
 
 	lb $t0 ($t0) 	# input G val pix 0
 	mult $t0 $t1 	
-	mflo $t5	# result 0 GREEN
-	addi $t0 1	# increment: B value, same pixel
+	mflo $t5	
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input B val pix 0
 	mult $t0 $t1
 	mflo $t7
-	addi $t0 1	#increment: next pixel R value
+	addi $t0 1	#increment: next pixel
 
 ####
 	
 	lb $t0 ($t0) 	# input R val pix 1 
 	lb $t1 1($a1) 	# kernel 1
 	mult $t0 $t1
-	mflo $t4      	# result 1
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 1
 	mult $t0 $t1
@@ -68,9 +71,9 @@ inner:
 	lb $t0 ($t0) 	# input R val pix 2 
 	lb $t1 2($a1) 	# kernel 2
 	mult $t0 $t1
-	mflo $t4      	# result 2
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 2
 	mult $t0 $t1
@@ -89,9 +92,9 @@ inner:
 	lb $t0 ($t0) 	# input R val pix 3 
 	lb $t1 3($a1) 	# kernel 3
 	mult $t0 $t1
-	mflo $t4      	# result 3
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 3
 	mult $t0 $t1
@@ -110,9 +113,9 @@ inner:
 	lb $t0 ($t0) 	# input R val pix 4 
 	lb $t1 4($a1) 	# kernel 4
 	mult $t0 $t1
-	mflo $t4      	# result 4
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 4
 	mult $t0 $t1
@@ -131,9 +134,9 @@ inner:
 	lb $t0 ($t0) 	# input R val pix 5 
 	lb $t1 5($a1) 	# kernel 5
 	mult $t0 $t1
-	mflo $t4      	# result 5
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 5
 	mult $t0 $t1
@@ -152,9 +155,9 @@ inner:
 	lb $t0 ($t0) 	# input R val pix 6 
 	lb $t1 6($a1) 	# kernel 6
 	mult $t0 $t1
-	mflo $t4      	# result 6
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 6
 	mult $t0 $t1
@@ -173,9 +176,9 @@ inner:
 	lb $t0 ($t0) 	# input R val pix 7
 	lb $t1 7($a1) 	# kernel 7
 	mult $t0 $t1
-	mflo $t4      	# result 7
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 7
 	mult $t0 $t1
@@ -194,9 +197,9 @@ inner:
 	lb $t0 ($t0) 	# input R val pix 8 
 	lb $t1 8($a1) 	# kernel 8
 	mult $t0 $t1
-	mflo $t4      	# result 8
+	mflo $t4      	
 	add $t3 $t3 $t4 # sum RED
-	addi $t0 1	# increment
+	addi $t0 1	
 
 	lb $t0 ($t0)	# input G val pix 8
 	mult $t0 $t1
@@ -208,7 +211,7 @@ inner:
 	mult $t0 $t1
 	mflo $t8
 	add $t7 $t7 $t8	# sum blue
-	addi $t0 1      # increment: next pixel
+	addi $s7 1	
 
 
 	
@@ -216,18 +219,22 @@ inner:
 	sb $s2 ($t5) 	# new value of G for target pixel
 	sb $s3 ($t7)	# new value of B for target pixel
 	addi $s0 -1 	# decrement number of pixels left to conv
-	j outter
 
 
+	#save those values to a2
 
-	# jal print_int
-	# sum all of these, save to R G or B, repeat	
+	li $t9 4 	# offset for a2
+	add $t9 $t9 $a2
+	sb ($t9) s1 	# R
+	addi $t9 1   	
+	sb ($t9) s2	# G
+	addi $t9 1	
+	sb ($t9) s3	# B
 
-
+	# need a line to save t9 into a2
 	
-	# Traverse the entire NxN image pixel by pixel (kernel) = a1
-	# 4($a1) = center of kernel
-	# save changed pixel values to a2 (corresponding to 4($a1)
+	j outter
+	
 		
 done:
 	jr $ra
