@@ -9,8 +9,11 @@ conv:
 	multu $s0 $s0   	
 	mflo $s0	# total pixels to convolute
 	
-	li $s7 4	#initial offset
-	add $s7 $s7 $a0	
+	li $s7 4	# initial offset a0
+	add $s7 $s7 $a0	 
+
+	li $s6 4	# a2
+	add $s6 $s6 $a2 
 
 	bgtz $s0 outer  # there's at least 1 pixel to convolute
 	b done		# there are no pixels to convolute
@@ -24,10 +27,6 @@ outer:
 
 inner:
 	#t3 = RED SUM, t5 = GREEN SUM, t7 = BLUE SUM
-
-#	li $t0 4	# offset
-#	add $t0, $t0, $a0
-
 
 	lb $t0 ($s7)	# input R val pix 0
 	lb $t1 0($a1) 	# kernel 0
@@ -223,20 +222,19 @@ inner:
 
 	#save those values to a2
 
-	li $t9 4 	# offset for a2
-	add $t9 $t9 $a2
-	sb ($t9) s1 	# R
-	addi $t9 1   	
-	sb ($t9) s2	# G
-	addi $t9 1	
-	sb ($t9) s3	# B
+	sb ($s6) s1 	# R
+	addi $s6 1   	
+	sb ($s6) s2	# G
+	addi $s6 1	
+	sb ($s6) s3	# B
 
-	# need a line to save t9 into a2
+	# need a line to save s6 into a2
 	
 	j outter
 	
 		
 done:
+	la 4($a2) s6
 	jr $ra
 
 #################################################################################
