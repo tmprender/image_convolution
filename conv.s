@@ -5,7 +5,9 @@ conv:
 
 	lw $s0 0($a0) 	# N
 	addi $s0 $s0 -2 # N-2 for output
-	sw $a2 $s0	# set the fist 4 bytes of output to N-2
+
+	sw $s1 0($s0) 	# preserve original n-2, $s0 will be decremented
+
 	multu $s0 $s0   	
 	mflo $s0	# total pixels to convolute
 	
@@ -62,7 +64,7 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 1
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1      # increment: next pixel
 
 ####
@@ -83,7 +85,7 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 2
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1      # increment: next pixel
 
 ####
@@ -104,7 +106,7 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 3
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1      # increment: next pixel
 
 ####
@@ -125,7 +127,7 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 4
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1      # increment: next pixel
 
 ####
@@ -146,7 +148,7 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 5
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1      # increment: next pixel
 
 ####
@@ -167,7 +169,7 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 6
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1      # increment: next pixel
 
 ####
@@ -188,7 +190,7 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 7
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1      # increment: next pixel
 
 ####
@@ -209,32 +211,27 @@ inner:
 	lb $t0 ($s7) 	# input B val pix 8
 	mult $t0 $t1
 	mflo $t8
-	add $t7 $t7 $t8	# sum blue
+	add $t7 $t7 $t8	# sum BLUE
 	addi $s7 1	
 
 
 	
-	sb $s1 ($t3)   	# new value of R for target pixel
-	sb $s2 ($t5) 	# new value of G for target pixel
-	sb $s3 ($t7)	# new value of B for target pixel
-	addi $s0 -1 	# decrement number of pixels left to conv
+	#save those values to s6
 
-
-	#save those values to a2
-
-	sb ($s6) s1 	# R
+	sb $s6 ($t3) 	# R
 	addi $s6 1   	
-	sb ($s6) s2	# G
+	sb $s6 ($t5)	# G
 	addi $s6 1	
-	sb ($s6) s3	# B
+	sb $s6 ($t7)	# B
 
-	# need a line to save s6 into a2
+	# copy s6 into a2 in 'done'
 	
-	j outter
+	j outer
 	
 		
 done:
-	la 4($a2) s6
+	lw $a2 ($s1) 	# N - 2, first four bytes
+	la $a2 ($s6)	# pixels (needs an offset of 4?)
 	jr $ra
 
 #################################################################################
